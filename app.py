@@ -74,8 +74,8 @@ with st.expander("So funktioniert Ryan-Foster-Verzweigung", expanded=True):
     st.markdown(
         r"""
 Bei einer fraktionalen Lösung wird das fraktionalste Stückpaar (i, j) aus
-**unterschiedlichen** Auftragstypen gesucht (gleiche Typen sind austauschbar
-- eine Verzweigung darauf wäre reine Verschwendung, siehe
+**unterschiedlichen** Auftragstypen gesucht (gleiche Typen sind austauschbar,
+eine Verzweigung darauf wäre reine Verschwendung - siehe
 `cutting-stock-cutting-planes-demo`). Zwei Kinder:
 
 - **ZUSAMMEN**: jedes künftige Muster enthält entweder BEIDE Stücke oder KEINES.
