@@ -85,11 +85,6 @@ Das wirkt direkt im Pricing-Teilproblem - diesmal ein BESCHRÄNKTER Rucksack
 (jedes Stück höchstens einmal verwendbar), gelöst per rekursivem Branch &
 Bound über die Stücke: ein direkter Rückgriff auf `branch-bound-demo`, das
 allererste Stück der ganzen Konzepte-Reihe.
-
-**Zwei echte Bugs beim Bau dieses Stücks gefunden und behoben** (nicht nur
-angenommen): eine entartete Spaltengenerierungs-Schleife, die fälschlich
-"fertig" meldete, und eine fehlerhafte Abschneide-Bedingung, die Knotenzahlen
-explodieren ließ. Details im Formulierungs-Abschnitt weiter unten.
         """
     )
 
@@ -249,19 +244,21 @@ gemeinsames Vorkommen $y_{ij} = \sum_{p:\ i,j \in p} x_p$ fraktional ist.
 "GETRENNT" verbietet jedes Muster mit BEIDEN. Beide Zweige schließen die
 aktuelle fraktionale Lösung aus - der Suchbaum macht garantiert Fortschritt.
 
-**Bug 1 - Entartung beim Pricing**: Spaltengenerierungs-LPs sind häufig
-entartet (mehrere Dual-Lösungen mit demselben Zielfunktionswert) - naives
-Pricing kann dadurch IMMER WIEDER dasselbe, bereits bekannte Muster liefern
-und fälschlich "keine Verbesserung mehr möglich" schließen. Konkret
-nachgewiesen: eine Instanz lieferte dadurch die ungültige Schranke 4.0 statt
-korrekt 3.0. Fix: das Pricing sucht explizit nach dem besten NOCH NICHT
-bekannten Muster (`bap_pricing.py`).
+**Entartung beim Pricing**: Spaltengenerierungs-LPs sind häufig entartet
+(mehrere Dual-Lösungen mit demselben Zielfunktionswert) - naives Pricing
+kann dadurch IMMER WIEDER dasselbe, bereits bekannte Muster liefern und
+fälschlich "keine Verbesserung mehr möglich" schließen, obwohl die
+Spaltengenerierung noch nicht am Ende ist. Deshalb sucht das Pricing hier
+gezielt nach dem besten NOCH NICHT bekannten Muster - das garantiert bei
+jedem Aufruf echten Fortschritt, unabhängig davon, welche Dual-Lösung die
+LP gerade liefert.
 
-**Bug 2 - fehlerhafte Abschneide-Bedingung**: eine ursprünglich verschachtelte
-Prüfung verhinderte in manchen Fällen korrektes Abschneiden - Knotenzahlen
-explodierten auf über 1000 ohne je eine Lösung zu finden. Fix: eine einzige,
-klare Bedingung ($\lceil \text{LP-Schranke} \rceil \geq$ bester bekannter
-Fund → abschneiden).
+**Abschneide-Bedingung**: ein Knoten wird verworfen, sobald seine
+aufgerundete Spaltengenerierungs-Schranke ($\lceil \text{LP-Schranke}
+\rceil$) das bislang beste gefundene Ergebnis nicht mehr unterbieten kann -
+dieselbe Branch-and-Bound-Logik wie in `branch-bound-demo`, hier auf eine
+per Spaltengenerierung gelöste statt einer einfachen LP-Schranke
+angewendet.
 
 **Warum das jetzt tatsächlich funktioniert, wo `column-generation-demo`
 ehrlich scheiterte**: dort wurde die fraktionale LP-Lösung nur EINMAL naiv
@@ -270,17 +267,82 @@ ganzzahlige Lösung erreicht ist - mit Kind-Knoten, die ihre Spaltengenerierung
 aus den (gefilterten) Mustern des Elternknotens warmstarten, statt bei null
 zu beginnen.
 
-**Abschluss dieser Linie**: mit diesem siebten Stück ist die
-Cutting-Stock-Linie vollständig - derselbe methodische Bogen wie die erste
-(Rucksack-)Linie, aber mit den beiden Stücken, die reines Rucksack strukturell
-nicht hergab.
-
 Implementiert in `bap_pricing.py` (Pricing mit Degenerations-Fix),
 `bap_master.py` (Mengendeckungs-LP), `bap_solver.py` (Branch-and-Price-Baum
 mit Warmstart und korrektem Abschneiden) und `bap_bruteforce.py`/
 `bap_ortools_reference.py` (unabhängige Referenzlösungen).
         """
     )
+
+st.markdown("---")
+
+st.markdown("## 🏁 Die ganze Cutting-Stock-Linie im Rückblick")
+st.markdown(
+    """
+Mit diesem siebten Stück ist die Linie vollständig - hier der ganze Bogen
+vom ersten bis zum letzten Stück:
+
+**Start - reine Suche, eine Schwäche bewusst offen gelassen**:
+[cutting-stock-branch-bound-demo](https://github.com/sebastian-hanisch/cutting-stock-branch-bound-demo)
+verzweigt über Bin-Zuweisungen, lässt austauschbare (symmetrische) Bins aber
+absichtlich unbehandelt - der Suchbaum bläht sich dadurch unnötig auf.
+
+**Zwei unabhängige Antworten auf diese Wurzel**:
+[cutting-stock-dp-demo](https://github.com/sebastian-hanisch/cutting-stock-dp-demo)
+tabelliert über Bedarfsvektoren statt zu verzweigen - derselbe Suchraum,
+andere Darstellung, mit einem eigenen, andersartigen Nachteil (der
+Zustandsraum wächst mit der Anzahl Auftragstypen, nicht mit der
+Rollenbreite).
+[cutting-stock-cutting-planes-demo](https://github.com/sebastian-hanisch/cutting-stock-cutting-planes-demo)
+behebt die Symmetrie tatsächlich, statt sie nur zu zeigen: ein echter
+algorithmischer Schnitt, der baugleiche offene Bins gar nicht erst als
+eigene Äste erzeugt.
+
+**Erste Konvergenz**:
+[cutting-stock-branch-cut-demo](https://github.com/sebastian-hanisch/cutting-stock-branch-cut-demo)
+kombiniert die Verzweigung der Wurzel mit dem Symmetrie-Schnitt UND einer an
+jedem Knoten frisch gelösten LP-Schranke - echtes, per Knoten wiederholtes
+Branch & Cut, näher an dem, was reale Solver einsetzen, als jedes
+Einzelverfahren.
+
+**Ein unabhängiger Zweig**:
+[cutting-stock-constraint-programming-demo](https://github.com/sebastian-hanisch/cutting-stock-constraint-programming-demo)
+verlässt Schranken-Vergleiche ganz zugunsten von Constraint-Propagation, für
+eine echte Materialsorten-Nebenbedingung, die eine LP-Schranke gar nicht
+ausdrücken könnte.
+
+**Der eigentliche Anlass dieser Linie**:
+[column-generation-demo](https://github.com/sebastian-hanisch/column-generation-demo)
+verlässt die Suche komplett - ein Master-LP fordert gezielt neue
+Schnittmuster an, statt vorab exponentiell viele durchzuprobieren. Die
+Schranke ist dabei bemerkenswert eng, aber das allein reicht nicht: naives
+Aufrunden der fraktionalen Lösung trifft das Optimum nur in etwa der Hälfte
+der Fälle.
+
+**Zweite Konvergenz - dieses Stück** schließt genau diese Lücke: echte
+Ryan-Foster-Verzweigung erzwingt bei jeder fraktionalen Lösung gezielt zwei
+Stücke zusammen oder getrennt, kombiniert mit Spaltengenerierung an jedem
+Knoten - ein direkter Rückgriff auf sowohl `column-generation-demo` (die
+Spaltengenerierung selbst) als auch `cutting-stock-branch-bound-demo` (das
+Pricing-Teilproblem ist wieder ein Rucksack, gelöst mit demselben
+rekursiven Branch & Bound wie ganz am Anfang der gesamten Konzepte-Reihe).
+
+**Die übergeordnete Lektion**: exakte Suche ist kein einzelnes Verfahren,
+sondern ein Spektrum zwischen zwei Polen - reine Baumsuche mit Schranken
+(Branch & Bound, Branch & Cut) auf der einen, LP-basierte Verfahren mit
+exponentiell vielen impliziten Variablen (Column Generation) auf der
+anderen Seite. Branch-and-Price kombiniert genau diese beiden Pole - und
+ist in der Praxis tatsächlich das Standardverfahren, mit dem reale Solver
+Tourenplanung, Personaleinsatzplanung und Zuschnittoptimierung in
+industriellem Maßstab lösen.
+
+Derselbe methodische Bogen wie die erste (Rucksack-)Linie - nur mit zwei
+zusätzlichen Stücken, die reines Rucksack strukturell nicht hergab: ein
+Problem mit natürlich exponentiell vielen impliziten Variablen
+(Schnittmustern) ist genau das, was Column Generation und Branch-and-Price
+brauchen.
+"""
+)
 
 st.markdown("---")
 
