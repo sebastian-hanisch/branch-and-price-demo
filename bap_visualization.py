@@ -102,7 +102,7 @@ def build_tree_figure(result, step, render_cap):
 def build_gap_comparison_chart(comparison):
     import plotly.graph_objects as go
 
-    labels = ["Naives Aufrunden (Wurzel-LP)", "Branch-and-Price (exakt)", "Wahres Optimum"]
+    labels = ["Naives Aufrunden (Wurzel-LP)", "Branch & Price (exakt)", "Wahres Optimum"]
     values = [comparison["roundup_bins"], comparison["exact_value"], comparison["true_optimum"]]
     colors = ["#c4cbd8", "#137a6b", "#2ca02c"]
     fig = go.Figure(

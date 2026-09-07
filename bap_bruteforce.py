@@ -1,4 +1,4 @@
-"""Erschöpfende Bin-Packing-Referenzlösung - unabhängig von Branch-and-Price,
+"""Erschöpfende Bin-Packing-Referenzlösung - unabhängig von Branch & Price,
 nur für kleine Instanzen praktikabel. Wie in jedem vorherigen Stück dieser
 Linie: Bedarfsmengen zu Einzelstücken expandiert, absteigend sortiert,
 höchstens ein neues Bin pro Schritt durchprobiert."""

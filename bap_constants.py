@@ -1,4 +1,4 @@
-"""Defaults, slider bounds und Presets für die Branch-and-Price-Demo."""
+"""Defaults, slider bounds und Presets für die Branch-&-Price-Demo."""
 
 DEFAULT_N_TYPES = 4
 DEFAULT_MAX_DEMAND = 2

@@ -1,6 +1,6 @@
-"""Branch-and-Price: an jedem Suchbaum-Knoten wird eine eigene Spalten-
+"""Branch & Price: an jedem Suchbaum-Knoten wird eine eigene Spalten-
 generierung gelöst (Muster vom Elternknoten geerbt und auf Zulässigkeit
-gefiltert - Standardpraxis in echtem Branch-and-Price, hier bewusst zuerst
+gefiltert - Standardpraxis in echtem Branch & Price, hier bewusst zuerst
 ohne Vererbung implementiert und dann als klar messbarer Geschwindigkeits-
 gewinn nachgewiesen); bei einer fraktionalen Lösung wird per echter
 Ryan-Foster-Regel verzweigt (SAME/DIFFER auf dem fraktionalsten Stückpaar

@@ -1,4 +1,4 @@
-# Branch-and-Price am Cutting-Stock-Problem – Streamlit-Demo
+# Branch & Price am Cutting-Stock-Problem – Streamlit-Demo
 
 **[→ Demo live ausprobieren](https://sebastianhanisch-branch-and-price-demo.streamlit.app/)**
 
@@ -77,7 +77,7 @@ jetzt tatsächlich geschlossene Kreis.
 | `bap_scenario.py` | Zufällige Cutting-Stock-Instanzen, Stück-Expansion mit Auftragstyp |
 | `bap_pricing.py` | Pricing-Teilproblem (beschränkter 0/1-Rucksack, degenerationsfest) |
 | `bap_master.py` | Mengendeckungs-LP über einzelne Stücke inkl. Dual-Werte |
-| `bap_solver.py` | Branch-and-Price-Baum mit Ryan-Foster-Verzweigung und Warmstart |
+| `bap_solver.py` | Branch-&-Price-Baum mit Ryan-Foster-Verzweigung und Warmstart |
 | `bap_bruteforce.py` | Unabhängige Referenzlösung (vollständige Enumeration) |
 | `bap_ortools_reference.py` | Echter Google-OR-Tools-CP-SAT-Solver |
 | `bap_evaluation.py` | Kennzahlen, Rundung-vs-exakt-Vergleich |

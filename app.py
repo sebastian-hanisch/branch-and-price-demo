@@ -1,5 +1,5 @@
 """
-Branch-and-Price am Cutting-Stock-Problem – interaktive Konzept-Demo
+Branch & Price am Cutting-Stock-Problem – interaktive Konzept-Demo
 Sebastian Hanisch - Operations Research und Machine Learning
 
 Siebtes und LETZTES Stück der Cutting-Stock-Linie: die Konvergenz von
@@ -29,7 +29,7 @@ from bap_scenario import generate_instance
 from bap_solver import root_relaxation, solve
 from bap_visualization import build_gap_comparison_chart, build_tree_figure
 
-st.set_page_config(page_title="Branch-and-Price am Cutting-Stock-Problem – Sebastian Hanisch", layout="wide")
+st.set_page_config(page_title="Branch & Price am Cutting-Stock-Problem – Sebastian Hanisch", layout="wide")
 
 
 @st.cache_data(show_spinner=False)
@@ -51,7 +51,7 @@ def _compute_comparison(n_types, roll_width, max_demand, seed, exact_value, true
     return cmp
 
 
-st.title("🌳📐 Branch-and-Price am Cutting-Stock-Problem")
+st.title("🌳📐 Branch & Price am Cutting-Stock-Problem")
 st.markdown(
     """
 Siebtes und **letztes** Stück der Cutting-Stock-Linie - die Konvergenz von
@@ -90,7 +90,7 @@ allererste Stück der ganzen Konzepte-Reihe.
 
 st.caption("🎯 Schnellstart – ein Beispielszenario laden:")
 PRESET_HELP = {
-    "Winzige Instanz (Baum komplett sichtbar)": "3 Auftragstypen - der komplette Branch-and-Price-Baum passt aufs Bild.",
+    "Winzige Instanz (Baum komplett sichtbar)": "3 Auftragstypen - der komplette Branch-&-Price-Baum passt aufs Bild.",
     "Mehrere Verzweigungen nötig": "Mehrere Ryan-Foster-Entscheidungen nötig, bis die Lösung ganzzahlig wird.",
     "Wo die Rundung in column-generation-demo scheiterte": "Genau die Instanz, bei der naives Aufrunden dort 9 statt 6 Rollen lieferte - hier exakt gelöst.",
 }
@@ -127,7 +127,7 @@ sync_query_params(n_types, roll_width, max_demand, seed)
 
 scenario_key = (int(n_types), int(roll_width), int(max_demand), int(seed))
 
-with st.spinner("Durchsuche den Branch-and-Price-Baum..."):
+with st.spinner("Durchsuche den Branch-&-Price-Baum..."):
     instance, result, true_optimum = _compute_solve(*scenario_key)
 
 st.caption(
@@ -135,7 +135,7 @@ st.caption(
     f"{instance.item_demands}, Rollenbreite {instance.roll_width}."
 )
 
-st.markdown("## 🎯 Der Branch-and-Price-Baum")
+st.markdown("## 🎯 Der Branch-&-Price-Baum")
 
 if "bap_step" not in st.session_state or st.session_state.get("bap_step_owner") != scenario_key:
     st.session_state["bap_step"] = len(result.nodes) - 1
@@ -148,7 +148,7 @@ if max_step == 0:
 else:
     step = st.slider(
         "Schritt (Knoten)", 0, max_step, key="bap_step",
-        help="Ein Schritt = ein Branch-and-Price-Knoten (eigene Spaltengenerierung).",
+        help="Ein Schritt = ein Branch-&-Price-Knoten (eigene Spaltengenerierung).",
     )
 
 render_note = (
@@ -211,7 +211,7 @@ st.plotly_chart(build_gap_comparison_chart(cmp), use_container_width=True, key="
 
 gc1, gc2, gc3 = st.columns(3)
 gc1.metric("Naives Aufrunden", f"{cmp['roundup_bins']} Rollen", help=f"Wurzel-LP-Schranke: {cmp['root_lp_bound']:.3f}")
-gc2.metric("Branch-and-Price (exakt)", f"{cmp['exact_value']} Rollen")
+gc2.metric("Branch & Price (exakt)", f"{cmp['exact_value']} Rollen")
 gc3.metric(
     "OR-Tools CP-SAT", cmp["ortools_best_value"],
     help="beweist Optimalität." if cmp["ortools_proven_optimal"] else "Zeitlimit erreicht.",
@@ -221,7 +221,7 @@ if cmp["closes_the_gap"] and cmp["exact_value"] == cmp["ortools_best_value"]:
     if cmp["roundup_bins"] > cmp["exact_value"]:
         st.success(
             f"✅ Naives Aufrunden hätte hier **{cmp['roundup_bins']}** Rollen gebraucht - "
-            f"Branch-and-Price findet das tatsächliche Optimum von **{cmp['exact_value']}** Rollen, "
+            f"Branch & Price findet das tatsächliche Optimum von **{cmp['exact_value']}** Rollen, "
             f"bestätigt durch OR-Tools und die Bruteforce-Referenz."
         )
     else:
@@ -268,7 +268,7 @@ aus den (gefilterten) Mustern des Elternknotens warmstarten, statt bei null
 zu beginnen.
 
 Implementiert in `bap_pricing.py` (Pricing mit Degenerations-Fix),
-`bap_master.py` (Mengendeckungs-LP), `bap_solver.py` (Branch-and-Price-Baum
+`bap_master.py` (Mengendeckungs-LP), `bap_solver.py` (Branch-&-Price-Baum
 mit Warmstart und korrektem Abschneiden) und `bap_bruteforce.py`/
 `bap_ortools_reference.py` (unabhängige Referenzlösungen).
         """
@@ -331,7 +331,7 @@ rekursiven Branch & Bound wie ganz am Anfang der gesamten Konzepte-Reihe).
 sondern ein Spektrum zwischen zwei Polen - reine Baumsuche mit Schranken
 (Branch & Bound, Branch & Cut) auf der einen, LP-basierte Verfahren mit
 exponentiell vielen impliziten Variablen (Column Generation) auf der
-anderen Seite. Branch-and-Price kombiniert genau diese beiden Pole - und
+anderen Seite. Branch & Price kombiniert genau diese beiden Pole - und
 ist in der Praxis tatsächlich das Standardverfahren, mit dem reale Solver
 Tourenplanung, Personaleinsatzplanung und Zuschnittoptimierung in
 industriellem Maßstab lösen.
@@ -339,7 +339,7 @@ industriellem Maßstab lösen.
 Derselbe methodische Bogen wie die erste (Rucksack-)Linie - nur mit zwei
 zusätzlichen Stücken, die reines Rucksack strukturell nicht hergab: ein
 Problem mit natürlich exponentiell vielen impliziten Variablen
-(Schnittmustern) ist genau das, was Column Generation und Branch-and-Price
+(Schnittmustern) ist genau das, was Column Generation und Branch & Price
 brauchen.
 """
 )

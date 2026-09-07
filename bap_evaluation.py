@@ -1,4 +1,4 @@
-"""Kennzahlen und der Kernvergleich dieses Stücks: schließt Branch-and-Price
+"""Kennzahlen und der Kernvergleich dieses Stücks: schließt Branch & Price
 die Lücke, die column-generation-demo ehrlich offen ließ (eine enge Schranke
 ist keine Lösung)?"""
 
