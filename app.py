@@ -97,7 +97,7 @@ PRESET_HELP = {
 preset_cols = st.columns(len(C.PRESETS))
 for i, name in enumerate(C.PRESETS.keys()):
     with preset_cols[i]:
-        st.button(name, use_container_width=True, on_click=apply_preset, args=(name,), help=PRESET_HELP[name])
+        st.button(name, width="stretch", on_click=apply_preset, args=(name,), help=PRESET_HELP[name])
 
 st.caption(
     "🔗 Die Adresszeile oben spiegelt Ihre aktuelle Konfiguration wider – einfach kopieren, "
@@ -118,7 +118,7 @@ with st.sidebar:
 
     st.button(
         "🎲 Neue Instanz generieren",
-        use_container_width=True,
+        width="stretch",
         on_click=randomize_seed,
         help="Würfelt neue Auftragsbreiten und -mengen.",
     )
@@ -158,7 +158,7 @@ render_note = (
 )
 st.caption(f"{len(result.nodes):,} Knoten insgesamt besucht{render_note}.")
 
-st.plotly_chart(build_tree_figure(result, step, C.MAX_NODES_RENDERED), use_container_width=True, key=f"tree_{step}")
+st.plotly_chart(build_tree_figure(result, step, C.MAX_NODES_RENDERED), width="stretch", key=f"tree_{step}")
 
 live = stats_up_to_step(result, step)
 lm1, lm2, lm3 = st.columns(3)
@@ -207,7 +207,7 @@ nicht - erst die Ryan-Foster-Verzweigung schließt die Lücke zuverlässig.
 )
 
 cmp = _compute_comparison(*scenario_key, result.best_value, true_optimum)
-st.plotly_chart(build_gap_comparison_chart(cmp), use_container_width=True, key="gap_comparison")
+st.plotly_chart(build_gap_comparison_chart(cmp), width="stretch", key="gap_comparison")
 
 gc1, gc2, gc3 = st.columns(3)
 gc1.metric("Naives Aufrunden", f"{cmp['roundup_bins']} Rollen", help=f"Wurzel-LP-Schranke: {cmp['root_lp_bound']:.3f}")
