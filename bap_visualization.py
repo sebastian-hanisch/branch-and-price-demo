@@ -40,6 +40,13 @@ def _compute_layout(nodes):
 def _node_label(node):
     if node.status == "root":
         return "Start<br>keine Ryan-Foster-Entscheidung aktiv"
+    if node.branch_types is None:
+        # Wurzel, die selbst schon Blatt ist oder abgeschnitten wird (kleine Instanz: LP-Lösung am Start
+        # bereits ganzzahlig) - hat status leaf_*/prune_bound statt "root", aber keine Verzweigung.
+        label = f"Start<br>keine Ryan-Foster-Entscheidung aktiv<br>LP-Schranke: {node.bound:.3f}"
+        if node.status in ("leaf_new_best", "leaf_not_best"):
+            label += "<br>Ganzzahlig (Blatt)"
+        return label
 
     a, b = node.branch_types
     if node.decision == "same":
